@@ -1,0 +1,23 @@
+﻿code,label
+labid,Lab ID
+site,Site
+esbl,ESB-ESBL
+org,Bacteria
+gene,ESBL GENE
+amp,Ampicillin 
+caz,Ceftazidime
+cip,Ciprofloxacin
+cpd,Cefpodoxime
+ctx,Cefotaxime
+cxm,Cefuroxime
+cxma,Cefuroxime Axetil
+etp,Ertapenem
+gm,Gentamicin
+ipm,Imipenem
+mem,Meropenem
+mxf,Moxifloxacin
+sam,Ampicillin-Sulbactam
+sxt,Trimethoprim-Sulphamethoxazole
+te,Tetracycline
+tgc,Tigecycline
+tzp,Piperacillin-Tazobactam

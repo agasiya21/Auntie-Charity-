@@ -1,0 +1,95 @@
+---
+title: "Chickens"
+author: "Charity"
+date: "7/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, error = F, fig.width = 16)
+library(tidyverse)
+library(gtsummary)
+library(summarytools)
+library(ggpubr)
+library(ggdist)
+library(tidyquant)
+chks <- read_rds("chickenn.rds")
+```
+
+```{r}
+chks %>% 
+  select(-labid) %>% 
+  tbl_summary(by = site, missing = "no") %>% 
+  add_p() %>% 
+  add_overall() %>% 
+ # modify_caption("**Table 1 - Antibiotics Resistance Per Site**") %>% 
+  bold_labels()
+```
+
+```{r fig.width=12}
+chks %>% 
+  select(-c(site, caz, esbl, gene, cpd, ctx, cxma, cxm, mxf, tzp, tgc)) %>% 
+  mutate(
+    across(
+    everything(), ~as.character(.x))) %>% 
+  pivot_longer(-labid) %>% 
+  filter(value=="Resistant") %>% 
+  count(name) %>% 
+  ggbarplot(x="name", y="n", fill = "grey", 
+            xlab = 'Antibiotics', ylab = "Frequency", 
+            title = "A Grahp of Antibiotic Frequency")
+```
+
+```{r }
+chks  %>% select(labid, amp, cip, te, org) %>% 
+  mutate(
+    across(
+    everything(), ~as.character(.x))) %>% 
+  pivot_longer(-labid) %>% 
+  filter(value=="Resistant") %>% 
+   count(name) %>% 
+  tbl_summary(by = name) %>% 
+  add_overall()
+```
+
+```{r}
+chks %>% 
+  group_by(site) %>% 
+  select(cip) %>% 
+  drop_na() %>% 
+  filter(cip=="Resistant")
+```
+
+```{r}
+vignette('dplyr')
+```
+
+```{r}
+chks %>% tbl_cross(
+  col = site,
+  row = esbl,
+  percent = "cell"
+)
+```
+
+```{r}
+chks %>% select(-labid) %>% 
+  tbl_summary(by = site, missing = 'no') %>% 
+  add_overall() %>% 
+  add_p() %>% 
+  bold_labels() 
+```
+
+```{r}
+chicken <- glm(as.factor(esbl) ~ gene + site, 
+               data = chks, 
+               family = binomial(link = 'logit'))
+summary(chicken)
+```
+
+```{r}
+chicken %>% 
+  tbl_regression(exponentiate = TRUE) %>% 
+  bold_labels()
+```
+
